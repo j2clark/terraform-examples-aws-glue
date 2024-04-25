@@ -57,9 +57,9 @@ phases:
       - terraform apply -auto-approve -var "project_name=$PROJECT_NAME" -var "github_repo=$GITHUB_REPO"  -var "branch=$BRANCH"  -var "artifacts=$ARTIFACTS"
 
       - touch init.tfvars
-      - printf "bucket=\"$ARTIFACTS\"\nkey=\"$BRANCH/terraform/lambda.tfstate\"" > init.tfvars
+      - printf "bucket=\"$ARTIFACTS\"\nkey=\"$BRANCH/terraform/glue-jobs.tfstate\"" > init.tfvars
       - touch application.tfvars
       - printf "project_name=\"$PROJECT_NAME\"\ngithub_repo=\"$GITHUB_REPO\"\nbranch=\"$BRANCH\"\nartifacts=\"$ARTIFACTS\"" > application.tfvars
 
       - aws s3 cp init.tfvars s3://${ARTIFACTS}/${BRANCH}/terraform/init.tfvars
-      - aws s3 cp lambda.tfvars s3://${ARTIFACTS}/${BRANCH}/terraform/application.tfvars
+      - aws s3 cp application.tfvars s3://${ARTIFACTS}/${BRANCH}/terraform/application.tfvars
