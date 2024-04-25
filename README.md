@@ -1,4 +1,4 @@
-# Terraform Examples: AWS Glue: Pyshell
+# Terraform Examples: <span style="color: orange">AWS Glue</span>: <span style="color: green">Pyshell<span/>
 
 An example on deploying a pyshell glue job using terraform
 
