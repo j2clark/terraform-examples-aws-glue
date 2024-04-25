@@ -1,6 +1,6 @@
 variable "branch" {
   type = string
-  default = "refactor"
+  default = "main"
 }
 
 locals {
