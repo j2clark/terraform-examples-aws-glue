@@ -1,0 +1,57 @@
+version: 0.2
+
+# buildspec for downloading required source code to S3 - as part of codepipeline build
+
+phases:
+  install:
+    runtime-versions:
+      # https://docs.aws.amazon.com/codebuild/latest/userguide/available-runtimes.html
+      python: 3.9
+    commands:
+      - echo install
+
+      - python --version
+
+      - echo "install terraform"
+      - curl -s -qL -o terraform_install.zip https://releases.hashicorp.com/terraform/1.7.4/terraform_1.7.4_linux_amd64.zip
+      - unzip terraform_install.zip -d /usr/bin/
+      - chmod +x /usr/bin/terraform
+    finally:
+      - terraform --version
+#     we only work within code
+      - cd code
+
+  pre_build:
+    commands:
+      - echo pre_build
+
+      - echo "install wheel"
+      - pip install wheel
+
+  build:
+    commands:
+      - echo "build pyshell wheel"
+      - python setup.py bdist_wheel
+#      we only need to move if we are building multiple wheels
+      - mv dist/pyshell_framework-1.0-py3-none-any.whl ./pyshell_framework-1.0-py3-none-any.whl
+
+  post_build:
+    commands:
+      - echo post_build
+
+      - echo "upload script and wheel to s3"
+      - aws s3 cp src/glue-script.py s3://${ARTIFACTS}/${BRANCH}/scripts/glue-script.py
+      - aws s3 cp pyshell_framework-1.0-py3-none-any.whl s3://${ARTIFACTS}/${BRANCH}/wheels/pyshell_framework-1.0-py3-none-any.whl
+
+      - echo "initialize terraform"
+      - cd terraform
+
+      - echo $PROJECT_NAME
+      - echo $GITHUB_REPO
+      - echo $BRANCH
+      - echo $ARTIFACTS
+      - terraform init -backend-config="bucket=$ARTIFACTS" -backend-config="key=$BRANCH/terraform/glue-jobs.tfstate"
+
+      - echo "apply terraform"
+#      - terraform plan -var "project_name=$PROJECT_NAME" -var "github_repo=$GITHUB_REPO"  -var "branch=$BRANCH"  -var "artifacts=$ARTIFACTS"
+      - terraform apply -auto-approve -var "project_name=$PROJECT_NAME" -var "github_repo=$GITHUB_REPO"  -var "branch=$BRANCH"  -var "artifacts=$ARTIFACTS"

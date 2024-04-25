@@ -1,0 +1,25 @@
+data "aws_iam_policy_document" "assumes_role_document" {
+  statement {
+    effect = "Allow"
+    principals {
+      type        = "Service"
+      identifiers = [
+        "glue.amazonaws.com",
+      ]
+    }
+    actions = [
+      "sts:AssumeRole"
+    ]
+  }
+}
+
+#resource "aws_iam_role" "execution_role" {
+#  name = "${local.project_name}-${var.branch}-execution-role"
+#  assume_role_policy = data.aws_iam_policy_document.codebuild_role_document.json
+#}
+
+resource "aws_iam_role" "execution_role" {
+  name = "${local.project_name}-execution-role"
+  assume_role_policy = data.aws_iam_policy_document.assumes_role_document.json
+}
+
