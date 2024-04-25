@@ -7,6 +7,14 @@ Terraform configuration is divided into 3 parts:
 2. **Deployment**: CodeBuild IAM and Project to deploy a branch or branches. I decided I wanted a separate CodeBuild ROle per branch, otherwise CodeBuild role would belong under infrastructure.
 3. **Application**: The Glue Job(s). Created and updated as part of deployment
 
+## AWS Components
+
+* IAM: Role and Policy
+* S3
+* Glue
+* CodeBuild + WebHook for GitHub
+
+
 ### Standing up a Glue Job:
 
 A note on backend state: I have included backend_state files for all 3 parts, but infrastructure and state are _commented out_ using `.bak` extension. Simply rename to .tf to use.
