@@ -3,9 +3,9 @@
 An example on deploying a pyshell glue job using terraform
 
 Terraform configuration is divided into 3 parts:
-1. Infrastructure: Resource and services which are used regardless of code branch, e.g. S3 bucket, execution IAM role, any other persistent resources or services
-2. Deployment: CodeBuild IAM and Project to deploy a branch or branches. I decided I wanted a separate CodeBuild ROle per branch, otherwise CodeBuild role would belong under infrastructure.
-3. Application: The Glue Job(s). Created and updated as part of deployment
+1. **Infrastructure**: Resource and services which are used regardless of code branch, e.g. S3 bucket, execution IAM role, any other persistent resources or services
+2. **Deployment**: CodeBuild IAM and Project to deploy a branch or branches. I decided I wanted a separate CodeBuild ROle per branch, otherwise CodeBuild role would belong under infrastructure.
+3. **Application**: The Glue Job(s). Created and updated as part of deployment
 
 ### Standing up a Glue Job:
 
