@@ -7,13 +7,23 @@ Terraform configuration is divided into 3 parts:
 2. **Deployment**: CodeBuild IAM and Project to deploy a branch or branches. I decided I wanted a separate CodeBuild ROle per branch, otherwise CodeBuild role would belong under infrastructure.
 3. **Application**: The Glue Job(s). Created and updated as part of deployment
 
-## AWS Components
+### Some notes:
+
+I work primarily on Windows OS, and the purpose of this repo is to capture terraform/AWS details, not to accomodate every OS under the sun.
+
+Everything has been tested and works at the time of publish, but this being AWS infrastructure at some point it will no longer be supported. One of the many hidden costs of using AWS.
+
+I am assuming several non-trivial requirements have been set up and are working:
+* Nodejs (for client code)
+* AWS ClI installed and configured
+* GitHub installed and configured
+
+## AWS Components Created
 
 * IAM: Role and Policy
-* S3
+* CodeBuild + WebHook for GitHub 
+* S3: for scripts, artifacts, and application terraform tfstate
 * Glue
-* CodeBuild + WebHook for GitHub
-
 
 ### Standing up a Glue Job:
 
@@ -70,10 +80,18 @@ The code terraform uses backend state, and uses the same s3 root as scripts and 
 
 The process is exactly opposite of standing up
 
-1. Manually Destroy Glue Jobs: 
-    I don't have a solution for properly cleaning up the glue job as part of a teardown.
+1. Manually Destroy Glue Jobs:
 
-    I currently manually delete the glue jobs created.
+   The buildspec creates an application.tfvars file and uploads to `s3://${infrastructure_bucketname}/${deploy_branch}/terraform/application.tfvars`
+
+    You can use aws cli to copy this file locally then run `terraform destroy`:
+    ```shell
+    cd code/terraform
+    aws s3 cp s3://terraform-examples-aws-glue/main/terraform/init.tfvars init.tfvars
+    aws s3 cp s3://terraform-examples-aws-glue/main/terraform/application.tfvars application.tfvars
+    terraform init -backend-config="init.tfvars" 
+    terraform destroy -var-file="application.tfvars"
+    ``` 
 
 2. Tear down the CodeBuild using terraform
 
