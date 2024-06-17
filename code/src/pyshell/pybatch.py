@@ -100,3 +100,6 @@ class PyBatch(object):
                 ]
             )
             print('put metric response: ' + json.dumps(response))
+
+            #  throw the exception!
+            raise e

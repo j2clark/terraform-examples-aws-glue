@@ -1,4 +1,4 @@
-resource "aws_cloudwatch_metric_alarm" "nlb_healthyhosts" {
+resource "aws_cloudwatch_metric_alarm" "glue_job_failure" {
   alarm_name          = "${local.name_prefix}-failed-gluejob"
   alarm_description   = "Number of failed jobs"
   statistic           = "Sum"
@@ -16,18 +16,29 @@ resource "aws_cloudwatch_metric_alarm" "nlb_healthyhosts" {
     BRANCH = var.branch
   }
 
-  #   actions_enabled     = "true"
-#   alarm_actions       = [
-#     aws_sns_topic.alarm.arn
-#   ]
+  actions_enabled     = "true"
+  alarm_actions       = [
+    aws_sns_topic.glue_failures.arn
+  ]
 
   tags = local.common_tags
 }
 
+# resource "aws_cloudwatch_event_rule" "console" {
+#   name        = "${local.name_prefix}-glue-failures"
+#   description = "Pyshell Glue Job Failures"
+#
+#   event_pattern = jsonencode({
+#     detail-type = [
+#       "AWS Console Sign In via CloudTrail"
+#     ]
+#   })
+# }
+
 # resource "aws_cloudwatch_event_target" "sns" {
 #   rule      = aws_cloudwatch_event_rule.console.name
 #   target_id = "SendToSNS"
-#   arn       = aws_sns_topic.aws_logins.arn
+#   arn       = aws_sns_topic.glue_failures.arn
 # }
 
 # resource "aws_sns_topic" "aws_logins" {
