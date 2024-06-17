@@ -21,10 +21,33 @@ data "aws_iam_policy_document" "execution_policy_document" {
       "s3:GetObject*",
     ]
     resources = [
-      aws_s3_bucket.artifacts.arn,
-      "${aws_s3_bucket.artifacts.arn}/*"
-#      TODO: test "${aws_s3_bucket.artifacts.arn}/scripts/*",
-#      TODO: test "${aws_s3_bucket.artifacts.arn}/wheels/*"
+      "${aws_s3_bucket.artifacts.arn}/${var.branch}/scripts/*",
+      "${aws_s3_bucket.artifacts.arn}/${var.branch}/wheels/*"
+    ]
+  }
+
+  statement {
+    sid = "GlueInputDataReadAccess"
+    effect = "Allow"
+    actions = [
+      "s3:List*",
+      "s3:GetObject*",
+    ]
+    resources = [
+      "${aws_s3_bucket.artifacts.arn}/${var.branch}/input/*"
+    ]
+  }
+
+  statement {
+    sid = "GlueOutputDataWriteAccess"
+    effect = "Allow"
+    actions = [
+#       "s3:List*",
+      "s3:PutObject*",
+    ]
+    resources = [
+      "${aws_s3_bucket.artifacts.arn}/${var.branch}/output",
+      "${aws_s3_bucket.artifacts.arn}/${var.branch}/output/*"
     ]
   }
 }

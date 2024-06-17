@@ -1,3 +1,5 @@
+import json
+
 import boto3.session
 
 
@@ -34,8 +36,20 @@ class PyBatch(object):
         s3_client = session.client('s3')
         data_input = s3_client.get_object(Bucket=self.bucket, Key=self.input)
         body = data_input['Body'].read().decode('utf-8')
-        print('S3 Input: ' + body)
+        # print('S3 Input: ' + body)
+        lines = body.splitlines()
+
+        output = []
+        index = 0
+        for line in lines:
+            print(f'Input Record[{index}]: {line}')
+            record = json.loads(line)
+            output.append({
+                'KEY': str(record['key1']).upper()
+            })
+            index = index + 1
 
         print(f'write to S3 here: S3://{self.bucket}/{self.output}')
+        s3_client.put_object(Bucket=self.bucket, Key=self.output, Body=json.dumps(output))
 
         print('publish CloudWatch metric here')
