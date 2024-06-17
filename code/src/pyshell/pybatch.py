@@ -42,24 +42,24 @@ class PyBatch(object):
         lines = body.splitlines()
 
         # TRANSFORM
-        output = ''
+        output_file = ''
         index = 0
         for line in lines:
             print(f'Input Record[{index}]: {line}')
             record = json.loads(line)
-            transformed = {
+            transformed_record = {
                 'KEY': str(record['key1']).upper()
             }
 
             if index > 0:
-                output += '\n'
-            output += json.dumps(transformed)
+                output_file += '\n'
+            output_file += json.dumps(transformed_record)
 
             index = index + 1
 
         # WRITE
         print(f'write to S3 here: S3://{self.bucket}/{self.output}')
-        s3_client.put_object(Bucket=self.bucket, Key=self.output, Body=json.dumps(output))
+        s3_client.put_object(Bucket=self.bucket, Key=self.output, Body=output_file)
 
         # CLOUDWATCH METRICS
         print('publish CloudWatch metric here')
