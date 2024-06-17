@@ -13,11 +13,11 @@ class PyBatch(object):
             if arg.startswith('--'):
                 value = raw_args[index + 1]
                 if "--input" in arg:
-                    self.input = arg.split("=")[1]
+                    self.input = value
                 elif "--output" in arg:
-                    self.output = arg.split("=")[1]
+                    self.output = value
                 elif "--bucket" in arg:
-                    self.bucket = arg.split("=")[1]
+                    self.bucket = value
                 index = index + 2
             else:
                 index = index + 1
