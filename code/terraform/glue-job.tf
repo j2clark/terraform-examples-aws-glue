@@ -11,7 +11,7 @@ data "aws_s3_object" "script" {
 }
 
 resource "aws_glue_job" "framework_job" {
-    name        = "${var.project_name}-${var.branch}-pyshell"
+    name        = "${local.name_prefix}-pyshell"
     role_arn    = data.aws_iam_role.execution_role.arn
     command {
         name = "pythonshell"
