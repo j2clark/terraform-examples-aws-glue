@@ -30,7 +30,7 @@ data "aws_iam_policy_document" "execution_policy_document" {
 }
 
 resource "aws_iam_policy" "execution_policy" {
-  name = "${local.project_name}-execution-policy"
+  name = "${local.name_prefix}-execution"
   policy = data.aws_iam_policy_document.execution_policy_document.json
 }
 

@@ -7,7 +7,7 @@ data "aws_iam_policy_document" "codebuild_policy_document" {
       "iam:PassRole"
     ]
     resources = [
-      data.aws_iam_role.execution_role.arn
+      aws_iam_role.execution_role.arn
     ]
   }
 
@@ -50,9 +50,9 @@ data "aws_iam_policy_document" "codebuild_policy_document" {
       "s3:GetBucket*"
     ]
     resources = [
-      data.aws_s3_bucket.artifacts.arn,
-      "${data.aws_s3_bucket.artifacts.arn}/${var.branch}",
-      "${data.aws_s3_bucket.artifacts.arn}/${var.branch}/*"
+      aws_s3_bucket.artifacts.arn,
+      "${aws_s3_bucket.artifacts.arn}/${var.branch}",
+      "${aws_s3_bucket.artifacts.arn}/${var.branch}/*"
     ]
   }
 
@@ -67,13 +67,13 @@ data "aws_iam_policy_document" "codebuild_policy_document" {
       "glue:DeleteJob"
     ]
     resources = [
-      "arn:aws:glue:${data.aws_region.current.id}:${data.aws_caller_identity.current.id}:job/${local.project_name}-${var.branch}*"
+      "arn:aws:glue:${data.aws_region.current.id}:${data.aws_caller_identity.current.id}:job/${local.name_prefix}*"
     ]
   }
 }
 
 resource "aws_iam_policy" "codebuild_policy" {
-  name = "${local.project_name}-codebuild-policy"
+  name = "${local.name_prefix}-codebuild"
   policy = data.aws_iam_policy_document.codebuild_policy_document.json
 }
 
