@@ -91,6 +91,8 @@ data "aws_iam_policy_document" "codebuild_policy_document" {
     actions = [
       "SNS:GetTopicAttributes",
       "SNS:ListTagsForResource",
+      "SNS:SetTopicAttributes",
+      "SNS:DeleteTopic",
     ]
     resources = [
       "arn:aws:sns:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:${local.name_prefix}-*"

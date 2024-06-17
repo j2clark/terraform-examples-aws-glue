@@ -16,10 +16,10 @@ resource "aws_cloudwatch_metric_alarm" "glue_job_failure" {
     BRANCH = var.branch
   }
 
-#   actions_enabled     = "true"
-#   alarm_actions       = [
-#     aws_sns_topic.glue_failures.arn
-#   ]
+  actions_enabled     = "true"
+  alarm_actions       = [
+    aws_sns_topic.glue_failures.arn
+  ]
 
   tags = local.common_tags
 }
