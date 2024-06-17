@@ -84,6 +84,18 @@ data "aws_iam_policy_document" "codebuild_policy_document" {
       "arn:aws:cloudwatch:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:alarm:${local.name_prefix}-*"
     ]
   }
+
+  statement {
+    sid = "ManageSNS"
+    effect = "Allow"
+    actions = [
+      "SNS:GetTopicAttributes",
+      "SNS:ListTagsForResource",
+    ]
+    resources = [
+      "arn:aws:sns:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:${local.name_prefix}-*"
+    ]
+  }
 }
 
 resource "aws_iam_policy" "codebuild_policy" {
