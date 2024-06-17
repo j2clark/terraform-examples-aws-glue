@@ -70,6 +70,18 @@ data "aws_iam_policy_document" "codebuild_policy_document" {
       "arn:aws:glue:${data.aws_region.current.id}:${data.aws_caller_identity.current.id}:job/${local.name_prefix}*"
     ]
   }
+
+  statement {
+    sid = "ManageCloudwatchAlarm"
+    effect = "Allow"
+    actions = [
+      "cloudwatch:DescribeAlarms",
+      "cloudwatch:ListTagsForResource",
+    ]
+    resources = [
+      "arn:aws:cloudwatch:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:alarm:${local.name_prefix}-*"
+    ]
+  }
 }
 
 resource "aws_iam_policy" "codebuild_policy" {
