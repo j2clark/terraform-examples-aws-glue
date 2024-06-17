@@ -8,6 +8,8 @@ class PyBatch(object):
     def __init__(self, raw_args: list[str]):
         super().__init__()
 
+        self.session = boto3.session.Session(region_name='us-west-1')
+
         print('raw_args: ' + str(raw_args))
 
         index = 0
@@ -32,63 +34,69 @@ class PyBatch(object):
 
 
     def run(self, job_args: list[str]):
+        try:
 
-        print('hello world!')
+            print('hello world!')
 
-        print(f'read from S3 here: S3://{self.bucket}/{self.input}')
-        session = boto3.session.Session(region_name='us-west-1')
-        s3_client = session.client('s3')
+            print(f'read from S3 here: S3://{self.bucket}/{self.input}')
 
-        # READ
-        data_input = s3_client.get_object(Bucket=self.bucket, Key=self.input)
-        body = data_input['Body'].read().decode('utf-8')
-        # print('S3 Input: ' + body)
-        lines = body.splitlines()
+            s3_client = self.session.client('s3')
 
-        # TRANSFORM
-        json_lines = ''
-        index = 0
-        for line in lines:
-            print(f'Input Record[{index}]: {line}')
-            record = json.loads(line)
-            transformed_record = {
-                'KEY': str(record['key1']).upper()
-            }
+            # READ
+            data_input = s3_client.get_object(Bucket=self.bucket, Key=self.input)
+            body = data_input['Body'].read().decode('utf-8')
+            # print('S3 Input: ' + body)
+            lines = body.splitlines()
 
-            if index > 0:
-                json_lines += '\n'
-            json_lines += json.dumps(transformed_record)
+            # TRANSFORM
+            json_lines = ''
+            index = 0
+            for line in lines:
+                print(f'Input Record[{index}]: {line}')
+                record = json.loads(line)
+                transformed_record = {
+                    'KEY': str(record['key1']).upper()
+                }
 
-            index = index + 1
+                if index > 0:
+                    json_lines += '\n'
+                json_lines += json.dumps(transformed_record)
 
-        # WRITE
-        print(f'write to S3 here: S3://{self.bucket}/{self.output}')
-        s3_client.put_object(Bucket=self.bucket, Key=self.output, Body=json_lines)
+                index = index + 1
 
-        # CLOUDWATCH METRICS
-        print('publish CloudWatch metric here')
-        cloudwatch = session.client('cloudwatch')
-        response = cloudwatch.put_metric_data(
-            MetricData=[
-                {
-                    'MetricName': 'KPIs',
-                    'Dimensions': [
-                        {
-                            'Name': 'GLUE_JOB',
-                            'Value': self.job_name
-                        },
-                        {
-                            'Name': 'BRANCH',
-                            'Value': self.branch
-                        }
-                    ],
-                    'Unit': 'None',
-                    'Value': 1
-                },
-            ],
-            Namespace='examples-aws-glue'
-        )
-        print('put metric response: ' + json.dumps(response))
+            # WRITE
+            print(f'write to S3 here: S3://{self.bucket}/{self.output}')
+            s3_client.put_object(Bucket=self.bucket, Key=self.output, Body=json_lines)
 
-        # CLOUDWATCH EVENTS
-        print('publish EventBridge event  here')
+            # CLOUDWATCH ALARMS
+            print('publish EventBridge event  here')
+            # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/cloudwatch/client/put_metric_alarm.html
+
+        except Exception as e:
+            print(f'Error: {e}')
+
+            # CLOUDWATCH METRICS
+            print('publish CloudWatch metric here')
+            cloudwatch = self.session.client('cloudwatch')
+            response = cloudwatch.put_metric_data(
+                Namespace='examples-aws-glue',
+                MetricData=[
+                    {
+                        'MetricName': 'GlueJobException',
+                        'Dimensions': [
+                            {
+                                'Name': 'GLUE_JOB',
+                                'Value': self.job_name
+                            },
+                            {
+                                'Name': 'BRANCH',
+                                'Value': self.branch
+                            }
+                        ],
+                        # 'Unit': 'Seconds' | 'Microseconds' | 'Milliseconds' | 'Bytes' | 'Kilobytes' | 'Megabytes' | 'Gigabytes' | 'Terabytes' | 'Bits' | 'Kilobits' | 'Megabits' | 'Gigabits' | 'Terabits' | 'Percent' | 'Count' | 'Bytes/Second' | 'Kilobytes/Second' | 'Megabytes/Second' | 'Gigabytes/Second' | 'Terabytes/Second' | 'Bits/Second' | 'Kilobits/Second' | 'Megabits/Second' | 'Gigabits/Second' | 'Terabits/Second' | 'Count/Second' | 'None',
+                        'Unit': 'Count',
+                        'Value': 1
+                    },
+                ]
+            )
+            print('put metric response: ' + json.dumps(response))

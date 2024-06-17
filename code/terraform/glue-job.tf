@@ -20,8 +20,8 @@ resource "aws_glue_job" "framework_job" {
     }
     default_arguments = {
         "--extra-py-files": "s3://${data.aws_s3_object.framework_wheel.bucket}/${data.aws_s3_object.framework_wheel.key}"
-        "--bucket": aws_s3_bucket_object.object.bucket
-        "--input": aws_s3_bucket_object.object.key
+        "--bucket": aws_s3_object.object.bucket
+        "--input": aws_s3_object.object.key
         "--output": "${var.branch}/output/transformed.txt"
         "--job_name": "${local.name_prefix}-pyshell"
         "--branch": var.branch
