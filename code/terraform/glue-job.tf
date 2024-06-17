@@ -23,6 +23,8 @@ resource "aws_glue_job" "framework_job" {
         "--bucket": aws_s3_bucket_object.object.bucket
         "--input": aws_s3_bucket_object.object.key
         "--output": "${var.branch}/output/transformed.txt"
+        "--job_name": "${local.name_prefix}-pyshell"
+        "--branch": var.branch
     }
     execution_property {
         max_concurrent_runs = local.max_concurrent_runs

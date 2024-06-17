@@ -21,6 +21,10 @@ class PyBatch(object):
                     self.output = value
                 elif "--bucket" in arg:
                     self.bucket = value
+                elif "--branch" in arg:
+                    self.branch = value
+                elif "--job_name" in arg:
+                    self.job_name = value
                 index = index + 2
             else:
                 index = index + 1
@@ -42,7 +46,7 @@ class PyBatch(object):
         lines = body.splitlines()
 
         # TRANSFORM
-        output_file = ''
+        json_lines = ''
         index = 0
         for line in lines:
             print(f'Input Record[{index}]: {line}')
@@ -52,17 +56,39 @@ class PyBatch(object):
             }
 
             if index > 0:
-                output_file += '\n'
-            output_file += json.dumps(transformed_record)
+                json_lines += '\n'
+            json_lines += json.dumps(transformed_record)
 
             index = index + 1
 
         # WRITE
         print(f'write to S3 here: S3://{self.bucket}/{self.output}')
-        s3_client.put_object(Bucket=self.bucket, Key=self.output, Body=output_file)
+        s3_client.put_object(Bucket=self.bucket, Key=self.output, Body=json_lines)
 
         # CLOUDWATCH METRICS
         print('publish CloudWatch metric here')
+        cloudwatch = session.client('cloudwatch')
+        response = cloudwatch.put_metric_data(
+            MetricData=[
+                {
+                    'MetricName': 'KPIs',
+                    'Dimensions': [
+                        {
+                            'Name': 'GLUE_JOB',
+                            'Value': self.job_name
+                        },
+                        {
+                            'Name': 'BRANCH',
+                            'Value': self.branch
+                        }
+                    ],
+                    'Unit': 'None',
+                    'Value': 1
+                },
+            ],
+            Namespace='examples-aws-glue'
+        )
+        print('put metric response: ' + json.dumps(response))
 
         # CLOUDWATCH EVENTS
         print('publish EventBridge event  here')

@@ -42,13 +42,21 @@ data "aws_iam_policy_document" "execution_policy_document" {
     sid = "GlueOutputDataWriteAccess"
     effect = "Allow"
     actions = [
-#       "s3:List*",
       "s3:PutObject*",
     ]
     resources = [
       "${aws_s3_bucket.artifacts.arn}/${var.branch}/output",
       "${aws_s3_bucket.artifacts.arn}/${var.branch}/output/*"
     ]
+  }
+
+  statement {
+    sid = "CloudwatchMetricWriteAccess"
+    effect = "Allow"
+    actions = [
+      "cloudwatch:PutMetricData"
+    ]
+    resources = ["*"]
   }
 }
 
