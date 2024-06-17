@@ -89,6 +89,7 @@ data "aws_iam_policy_document" "codebuild_policy_document" {
     sid = "ManageSNS"
     effect = "Allow"
     actions = [
+      "SNS:CreateTopic",
       "SNS:GetTopicAttributes",
       "SNS:ListTagsForResource",
       "SNS:SetTopicAttributes",
