@@ -13,3 +13,9 @@ class PyBatch(object):
     def run(self, job_args: list[str]):
 
         print('hello world!')
+
+        print('read from S3 here')
+
+        print('write to S3 here')
+
+        print('publish CloudWatch metric here')
