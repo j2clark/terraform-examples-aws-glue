@@ -43,6 +43,7 @@ phases:
       - cd ziplib-demo
       - zip -r9 library.zip *
       - cd ..
+      - mv ziplib-demo/library.zip library.zip
       - ls .
 #      - cd $PWD/unpacked
 #      - cd src/pyshell_framework.egg-info
