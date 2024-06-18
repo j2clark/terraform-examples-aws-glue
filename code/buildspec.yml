@@ -40,10 +40,14 @@ phases:
 #      - cd ziplib-demo
 #      - virtualenv .
       - pip install --target=ziplib-demo pandas==2.2.1
+      - cd ziplib-demo
+      - zip -r9 library.zip *
+      - cd ..
+      - ls .
 #      - cd $PWD/unpacked
 #      - cd src/pyshell_framework.egg-info
 #      - pip install -r requires.txt
-      - ls ziplib-demo
+#      - ls ziplib-demo
 #      - cd $PWD
 #      - ls .
 
