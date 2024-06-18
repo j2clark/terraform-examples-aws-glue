@@ -1,6 +1,6 @@
 data "aws_s3_object" "dependencies" {
     bucket = data.aws_s3_bucket.artifacts.bucket
-    key = "${var.branch}/wheels/library.zip"
+    key = "${var.branch}/wheels/dependencies.zip"
 }
 
 data "aws_s3_object" "framework_wheel" {

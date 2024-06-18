@@ -2,6 +2,8 @@ version: 0.2
 
 # buildspec for downloading required source code to S3 - as part of codepipeline build
 
+# https://realpython.com/python-zipapp/
+
 phases:
   install:
     runtime-versions:
@@ -36,22 +38,13 @@ phases:
 #      we only need to move if we are building multiple wheels
       - mv dist/pyshell_framework-1.0-py3-none-any.whl ./pyshell_framework-1.0-py3-none-any.whl
 
-      - mkdir ziplib-demo
-      - pip install --target=ziplib-demo -r requirements.txt
-#      - cd ziplib-demo
-#      - virtualenv .
-#      - pip install --target=ziplib-demo pandas==2.2.1
-      - cd ziplib-demo
-      - zip -r9 library.zip *
+      - mkdir dependencies
+      - pip install --prefer-binary --target=dependencies -r requirements.txt
+
+      - cd dependencies
+      - zip -r ../dependencies.zip *
       - cd ..
-#      - mv ziplib-demo/library.zip library.zip
-#      - ls .
-#      - cd $PWD/unpacked
-#      - cd src/pyshell_framework.egg-info
-#      - pip install -r requires.txt
-#      - ls ziplib-demo
-#      - cd $PWD
-#      - ls .
+
 
   post_build:
     commands:
@@ -59,7 +52,7 @@ phases:
 
       - echo "upload script, wheel, and data to s3"
       - aws s3 cp src/glue-script.py s3://${ARTIFACTS}/${BRANCH}/scripts/glue-script.py
-      - aws s3 cp ziplib-demo/library.zip s3://${ARTIFACTS}/${BRANCH}/wheels/library.zip
+      - aws s3 cp dependencies.zip s3://${ARTIFACTS}/${BRANCH}/wheels/dependencies.zip
       - aws s3 cp pyshell_framework-1.0-py3-none-any.whl s3://${ARTIFACTS}/${BRANCH}/wheels/pyshell_framework-1.0-py3-none-any.whl
       - aws s3 cp data/example.data.txt s3://${ARTIFACTS}/${BRANCH}/input/example.data.txt
 
@@ -73,7 +66,6 @@ phases:
       - terraform init -backend-config="bucket=$ARTIFACTS" -backend-config="key=$BRANCH/terraform/application.tfstate"
 
       - echo "apply terraform"
-#      - terraform plan -var "project_name=$PROJECT_NAME" -var "github_repo=$GITHUB_REPO"  -var "branch=$BRANCH"  -var "artifacts=$ARTIFACTS"
       - terraform apply -auto-approve -var "project_name=$PROJECT_NAME" -var "github_repo=$GITHUB_REPO"  -var "branch=$BRANCH"  -var "artifacts=$ARTIFACTS"
 
       - touch init.tfvars

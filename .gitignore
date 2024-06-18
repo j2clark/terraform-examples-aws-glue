@@ -2,3 +2,6 @@
 /**/.terraform.lock.hcl
 /**/terraform.tfstate
 /**/terraform.tfstate.backup
+/code/src/pyshell_framework.egg-info/
+/code/dist/
+/code/build/
