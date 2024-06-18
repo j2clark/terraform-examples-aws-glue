@@ -35,10 +35,15 @@ phases:
 #      we only need to move if we are building multiple wheels
       - mv dist/pyshell_framework-1.0-py3-none-any.whl ./pyshell_framework-1.0-py3-none-any.whl
 
-      - cd src/pyshell_framework.egg-info
-      - pip install -r requires.txt
+      - mkdir ziplib-demo
+      - cd ziplib-demo
+      - virtualenv .
+      - bin/pip install --install-option --install-lib=$PWD/unpacked pandas=2.2.1
+      -
+#      - cd src/pyshell_framework.egg-info
+#      - pip install -r requires.txt
       - ls .
-      - cd ../..
+      - cd ..
 
   post_build:
     commands:
