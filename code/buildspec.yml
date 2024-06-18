@@ -31,20 +31,21 @@ phases:
   build:
     commands:
       - echo "build pyshell wheel"
+      - virtualenv .
       - python setup.py bdist_wheel
 #      we only need to move if we are building multiple wheels
       - mv dist/pyshell_framework-1.0-py3-none-any.whl ./pyshell_framework-1.0-py3-none-any.whl
 
       - mkdir ziplib-demo
-      - cd ziplib-demo
-      - virtualenv .
-      - pip install --target=$PWD/unpacked pandas==2.2.1
-      - cd $PWD/unpacked
+#      - cd ziplib-demo
+#      - virtualenv .
+      - pip install --target=ziplib-demo pandas==2.2.1
+#      - cd $PWD/unpacked
 #      - cd src/pyshell_framework.egg-info
 #      - pip install -r requires.txt
-      - ls .
-      - cd $PWD
-      - ls .
+      - ls ziplib-demo
+#      - cd $PWD
+#      - ls .
 
   post_build:
     commands:
