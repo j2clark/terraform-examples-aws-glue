@@ -43,8 +43,8 @@ phases:
       - cd ziplib-demo
       - zip -r9 library.zip *
       - cd ..
-      - mv ziplib-demo/library.zip library.zip
-      - ls .
+#      - mv ziplib-demo/library.zip library.zip
+#      - ls .
 #      - cd $PWD/unpacked
 #      - cd src/pyshell_framework.egg-info
 #      - pip install -r requires.txt
@@ -58,6 +58,7 @@ phases:
 
       - echo "upload script, wheel, and data to s3"
       - aws s3 cp src/glue-script.py s3://${ARTIFACTS}/${BRANCH}/scripts/glue-script.py
+      - aws s3 cp ziplib-demo/library.zip s3://${ARTIFACTS}/${BRANCH}/wheels/library.zip
       - aws s3 cp pyshell_framework-1.0-py3-none-any.whl s3://${ARTIFACTS}/${BRANCH}/wheels/pyshell_framework-1.0-py3-none-any.whl
       - aws s3 cp data/example.data.txt s3://${ARTIFACTS}/${BRANCH}/input/example.data.txt
 

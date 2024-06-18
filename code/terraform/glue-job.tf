@@ -1,3 +1,8 @@
+data "aws_s3_object" "dependencies" {
+    bucket = data.aws_s3_bucket.artifacts.bucket
+    key = "${var.branch}/wheels/library.zip"
+}
+
 data "aws_s3_object" "framework_wheel" {
     bucket = data.aws_s3_bucket.artifacts.bucket
     key = "${var.branch}/wheels/pyshell_framework-1.0-py3-none-any.whl"
@@ -22,7 +27,7 @@ resource "aws_glue_job" "framework_job" {
         script_location = "s3://${data.aws_s3_object.script.bucket}/${data.aws_s3_object.script.key}"
     }
     default_arguments = {
-        "--extra-py-files": "s3://${data.aws_s3_object.framework_wheel.bucket}/${data.aws_s3_object.framework_wheel.key}"
+        "--extra-py-files": "s3://${data.aws_s3_object.framework_wheel.bucket}/${data.aws_s3_object.framework_wheel.key},s3://${data.aws_s3_object.dependencies.bucket}/${data.aws_s3_object.dependencies.key}"
         "--bucket": data.aws_s3_object.data.bucket
         "--input": data.aws_s3_object.data.key
         "--output": "${var.branch}/output/transformed.txt"
