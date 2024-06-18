@@ -39,7 +39,8 @@ phases:
       - mv dist/pyshell_framework-1.0-py3-none-any.whl ./pyshell_framework-1.0-py3-none-any.whl
 
       - mkdir dependencies
-      - pip install --prefer-binary --target=dependencies -r requirements.txt
+#      - pip install --prefer-binary --target=dependencies -r requirements.txt
+      - pip install --target=dependencies -r requirements.txt
 
       - cd dependencies
       - zip -r ../dependencies.zip *
