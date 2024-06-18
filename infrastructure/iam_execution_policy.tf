@@ -54,8 +54,8 @@ data "aws_iam_policy_document" "execution_policy_document" {
     sid = "CloudwatchMetricWriteAccess"
     effect = "Allow"
     actions = [
-#       "cloudwatch:PutMetricData"
-      "cloudwatch:*"
+      "cloudwatch:PutMetricData"
+#       "cloudwatch:*"
     ]
     resources = ["*"]
   }

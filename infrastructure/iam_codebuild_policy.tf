@@ -35,7 +35,7 @@ data "aws_iam_policy_document" "codebuild_policy_document" {
       "codebuild:BatchPutCodeCoverages"
     ]
     resources = [
-      "arn:aws:codebuild:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:report-group/${local.project_name}*"
+      "arn:aws:codebuild:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:report-group/${local.name_prefix}*"
     ]
   }
 
@@ -51,8 +51,9 @@ data "aws_iam_policy_document" "codebuild_policy_document" {
     ]
     resources = [
       aws_s3_bucket.artifacts.arn,
-      "${aws_s3_bucket.artifacts.arn}/${var.branch}",
-      "${aws_s3_bucket.artifacts.arn}/${var.branch}/*"
+      "${aws_s3_bucket.artifacts.arn}/*",
+#       "${aws_s3_bucket.artifacts.arn}/${var.branch}",
+#       "${aws_s3_bucket.artifacts.arn}/${var.branch}/*"
     ]
   }
 
@@ -67,7 +68,7 @@ data "aws_iam_policy_document" "codebuild_policy_document" {
       "glue:DeleteJob"
     ]
     resources = [
-      "arn:aws:glue:${data.aws_region.current.id}:${data.aws_caller_identity.current.id}:job/${local.name_prefix}*"
+      "arn:aws:glue:${data.aws_region.current.id}:${data.aws_caller_identity.current.id}:job/${local.project_name}*"
     ]
   }
 
@@ -81,7 +82,7 @@ data "aws_iam_policy_document" "codebuild_policy_document" {
       "cloudwatch:PutMetricAlarm",
     ]
     resources = [
-      "arn:aws:cloudwatch:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:alarm:${local.name_prefix}-*"
+      "arn:aws:cloudwatch:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:alarm:${local.project_name}*"
     ]
   }
 
@@ -96,7 +97,7 @@ data "aws_iam_policy_document" "codebuild_policy_document" {
       "SNS:DeleteTopic",
     ]
     resources = [
-      "arn:aws:sns:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:${local.name_prefix}-*"
+      "arn:aws:sns:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:${local.project_name}*"
     ]
   }
 }
