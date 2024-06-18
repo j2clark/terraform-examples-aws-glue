@@ -1,5 +1,11 @@
 from setuptools import setup
 
+# https://realpython.com/python-wheels/#calling-all-developers-build-your-wheels
+
+# https://docs.aws.amazon.com/glue/latest/dg/aws-glue-programming-python-libraries.html#aws-glue-programming-python-libraries-zipping
+
+# https://stackoverflow.com/questions/17486578/how-can-you-bundle-all-your-python-code-into-a-single-zip-file
+
 setup(
     name="pyshell-framework",
     version="1.0",

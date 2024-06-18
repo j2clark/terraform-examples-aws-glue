@@ -35,6 +35,9 @@ phases:
 #      we only need to move if we are building multiple wheels
       - mv dist/pyshell_framework-1.0-py3-none-any.whl ./pyshell_framework-1.0-py3-none-any.whl
 
+      - pip install -target=src/lib -r src/pyshell_framework.egg-info/requires.txt
+      - ls src/lib
+
   post_build:
     commands:
       - echo post_build
