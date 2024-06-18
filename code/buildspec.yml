@@ -39,9 +39,10 @@ phases:
     commands:
       - echo post_build
 
-      - echo "upload script and wheel to s3"
+      - echo "upload script, wheel, and data to s3"
       - aws s3 cp src/glue-script.py s3://${ARTIFACTS}/${BRANCH}/scripts/glue-script.py
       - aws s3 cp pyshell_framework-1.0-py3-none-any.whl s3://${ARTIFACTS}/${BRANCH}/wheels/pyshell_framework-1.0-py3-none-any.whl
+      - aws s3 cp data/example.data.txt s3://${ARTIFACTS}/${BRANCH}/input/example.data.txt
 
       - echo "initialize terraform"
       - cd terraform

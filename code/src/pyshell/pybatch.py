@@ -17,16 +17,16 @@ class PyBatch(object):
             arg = raw_args[index]
             if arg.startswith('--'):
                 value = raw_args[index + 1]
-                if "--input" in arg:
+                if "--bucket" in arg:
+                    self.bucket = value
+                elif "--input" in arg:
                     self.input = value
                 elif "--output" in arg:
                     self.output = value
-                elif "--bucket" in arg:
-                    self.bucket = value
+                elif "--application" in arg:
+                    self.application = value
                 elif "--branch" in arg:
                     self.branch = value
-                elif "--job_name" in arg:
-                    self.job_name = value
                 index = index + 2
             else:
                 index = index + 1
@@ -79,21 +79,20 @@ class PyBatch(object):
             print('publish CloudWatch metric here')
             cloudwatch = self.session.client('cloudwatch')
             response = cloudwatch.put_metric_data(
-                Namespace='examples-aws-glue',
+                Namespace=self.application,
                 MetricData=[
                     {
-                        'MetricName': 'GlueJobException',
+                        'MetricName': 'JobFailure',
                         'Dimensions': [
                             {
-                                'Name': 'GLUE_JOB',
-                                'Value': self.job_name
+                                'Name': 'APPLICATION',
+                                'Value': self.application
                             },
                             {
                                 'Name': 'BRANCH',
                                 'Value': self.branch
                             }
                         ],
-                        # 'Unit': 'Seconds' | 'Microseconds' | 'Milliseconds' | 'Bytes' | 'Kilobytes' | 'Megabytes' | 'Gigabytes' | 'Terabytes' | 'Bits' | 'Kilobits' | 'Megabits' | 'Gigabits' | 'Terabits' | 'Percent' | 'Count' | 'Bytes/Second' | 'Kilobytes/Second' | 'Megabytes/Second' | 'Gigabytes/Second' | 'Terabytes/Second' | 'Bits/Second' | 'Kilobits/Second' | 'Megabits/Second' | 'Gigabits/Second' | 'Terabits/Second' | 'Count/Second' | 'None',
                         'Unit': 'Count',
                         'Value': 1
                     },

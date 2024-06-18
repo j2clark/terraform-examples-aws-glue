@@ -1,13 +1,16 @@
 data "aws_s3_object" "framework_wheel" {
     bucket = data.aws_s3_bucket.artifacts.bucket
     key = "${var.branch}/wheels/pyshell_framework-1.0-py3-none-any.whl"
-#    key = "wheels/pyshell_framework-1.0-py3-none-any.whl"
 }
 
 data "aws_s3_object" "script" {
     bucket = data.aws_s3_bucket.artifacts.bucket
     key = "${var.branch}/scripts/glue-script.py"
-#    key = "scripts/glue-script.py"
+}
+
+data "aws_s3_object" "data" {
+    bucket = data.aws_s3_bucket.artifacts.bucket
+    key = "${var.branch}/input/example.data.txt"
 }
 
 resource "aws_glue_job" "framework_job" {
@@ -20,10 +23,10 @@ resource "aws_glue_job" "framework_job" {
     }
     default_arguments = {
         "--extra-py-files": "s3://${data.aws_s3_object.framework_wheel.bucket}/${data.aws_s3_object.framework_wheel.key}"
-        "--bucket": aws_s3_object.object.bucket
-        "--input": aws_s3_object.object.key
+        "--bucket": data.aws_s3_object.data.bucket
+        "--input": data.aws_s3_object.data.key
         "--output": "${var.branch}/output/transformed.txt"
-        "--job_name": "${local.name_prefix}-pyshell"
+        "--application": var.project_name
         "--branch": var.branch
     }
     execution_property {
