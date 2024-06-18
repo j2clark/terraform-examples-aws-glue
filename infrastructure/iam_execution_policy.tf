@@ -54,10 +54,20 @@ data "aws_iam_policy_document" "execution_policy_document" {
     sid = "CloudwatchMetricWriteAccess"
     effect = "Allow"
     actions = [
-      "cloudwatch:PutMetricData"
+#       "cloudwatch:PutMetricData"
+      "cloudwatch:*"
     ]
     resources = ["*"]
   }
+
+#   statement {
+#     sid = "SNSWriteAccess"
+#     effect = "Allow"
+#     actions = [
+#       "sns:Publish"
+#     ]
+#     resources = ["*"]
+#   }
 }
 
 resource "aws_iam_policy" "execution_policy" {
