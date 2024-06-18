@@ -38,12 +38,13 @@ phases:
       - mkdir ziplib-demo
       - cd ziplib-demo
       - virtualenv .
-      - bin/pip install --install-option --install-lib=$PWD/unpacked pandas=2.2.1
-      -
+      - pip install --target=$PWD/unpacked pandas=2.2.1
+      - cd $PWD/unpacked
 #      - cd src/pyshell_framework.egg-info
 #      - pip install -r requires.txt
       - ls .
-      - cd ..
+      - cd $PWD
+      - ls .
 
   post_build:
     commands:
