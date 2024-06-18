@@ -15,12 +15,13 @@ setup(
     packages=[
         'pyshell'
     ],
+
     install_requires=[
         # TODO: add packages locally to ensure a fixed known environment
-        'watchtower==3.0.1',
-        'pendulum==2.1.2',
-        'pandas==2.2.1',
-        'botocore==1.34.128',
+        # 'watchtower==3.0.1',
+        # 'pendulum==2.1.2',
+        # 'pandas==2.2.1',
+        # 'botocore==1.34.128',
         # 'python-dateutil>=2.8.2',
         # 'tzdata>=2022.7',
         # 'pytz>=2020.1',

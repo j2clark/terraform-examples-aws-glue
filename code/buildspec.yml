@@ -37,9 +37,10 @@ phases:
       - mv dist/pyshell_framework-1.0-py3-none-any.whl ./pyshell_framework-1.0-py3-none-any.whl
 
       - mkdir ziplib-demo
+      - pip install --target=ziplib-demo -r requirements.txt
 #      - cd ziplib-demo
 #      - virtualenv .
-      - pip install --target=ziplib-demo pandas==2.2.1
+#      - pip install --target=ziplib-demo pandas==2.2.1
       - cd ziplib-demo
       - zip -r9 library.zip *
       - cd ..
