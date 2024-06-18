@@ -35,8 +35,10 @@ class PyBatch(object):
 
     def run(self, job_args: list[str]):
         try:
-
             print('hello world!')
+
+            # Publish metric
+            self.publish_metric('JobExecution')
 
             print(f'read from S3 here: S3://{self.bucket}/{self.input}')
 
@@ -74,15 +76,18 @@ class PyBatch(object):
 
         except Exception as e:
             print(f'Error: {e}')
+            self.publish_metric('JobFailure')
+            #  throw the exception!
+            raise e
 
-            # CLOUDWATCH METRICS
-            print('publish CloudWatch metric here')
+    def publish_metric(self, metric_name) -> None:
+        try:
             cloudwatch = self.session.client('cloudwatch')
             response = cloudwatch.put_metric_data(
                 Namespace=self.application,
                 MetricData=[
                     {
-                        'MetricName': 'JobFailure',
+                        'MetricName': metric_name,
                         'Dimensions': [
                             {
                                 'Name': 'APPLICATION',
@@ -99,6 +104,6 @@ class PyBatch(object):
                 ]
             )
             print('put metric response: ' + json.dumps(response))
-
-            #  throw the exception!
+        except Exception as e:
+            print(f'Error Publishing Metric: {e}')
             raise e
