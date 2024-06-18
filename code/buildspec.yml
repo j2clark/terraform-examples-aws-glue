@@ -33,18 +33,18 @@ phases:
   build:
     commands:
       - echo "build pyshell wheel"
-      - virtualenv .
+#      - virtualenv .
       - python setup.py bdist_wheel
 #      we only need to move if we are building multiple wheels
       - mv dist/pyshell_framework-1.0-py3-none-any.whl ./pyshell_framework-1.0-py3-none-any.whl
 
-      - mkdir dependencies
+#      - mkdir dependencies
 #      - pip install --prefer-binary --target=dependencies -r requirements.txt
-      - pip install --target=dependencies -r requirements.txt
+#      - pip install --target=dependencies -r requirements.txt
 
-      - cd dependencies
-      - zip -r ../dependencies.zip *
-      - cd ..
+#      - cd dependencies
+#      - zip -r ../dependencies.zip *
+#      - cd ..
 
 
   post_build:
@@ -53,7 +53,7 @@ phases:
 
       - echo "upload script, wheel, and data to s3"
       - aws s3 cp src/glue-script.py s3://${ARTIFACTS}/${BRANCH}/scripts/glue-script.py
-      - aws s3 cp dependencies.zip s3://${ARTIFACTS}/${BRANCH}/wheels/dependencies.zip
+#      - aws s3 cp dependencies.zip s3://${ARTIFACTS}/${BRANCH}/wheels/dependencies.zip
       - aws s3 cp pyshell_framework-1.0-py3-none-any.whl s3://${ARTIFACTS}/${BRANCH}/wheels/pyshell_framework-1.0-py3-none-any.whl
       - aws s3 cp data/example.data.txt s3://${ARTIFACTS}/${BRANCH}/input/example.data.txt
 

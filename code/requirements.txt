@@ -1,4 +1,4 @@
---only-binary :all:
+#--only-binary :all:
 #--prefer-binary
 
 watchtower==3.0.1
