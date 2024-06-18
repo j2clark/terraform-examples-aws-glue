@@ -1,5 +1,5 @@
-# --only-binary
---prefer-binary
+--only-binary
+#--prefer-binary
 
 watchtower==3.0.1
 pendulum==2.1.2
